@@ -36,6 +36,10 @@ module.exports = (sequelize, type) => {
         type: type.TEXT,
         allowNull: true,
       },
+      roleId: {
+        type: type.INTEGER,
+        default: 1,
+      },
     },
     {
       timestamps: true,
