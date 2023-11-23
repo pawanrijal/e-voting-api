@@ -1,3 +1,4 @@
+const { role } = require("../lib/database.connection");
 const UserService = require("../services/user.service");
 const successResponse = require("../utils/successResponse");
 
@@ -44,7 +45,9 @@ class UserController {
       user.password = undefined;
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
-      user.email = IAes.decrypt(user.email, process.env.ENCRYPTION_SECRET, 256);
+      // user.email = IAes.decrypt(user.email, process.env.ENCRYPTION_SECRET, 256);
+      const roleData = await role.findByPk(user.roleId);
+      user.dataValues.roleName = roleData.name;
       successResponse(res, 200, user, "User Profile");
     } catch (err) {
       next(err);
