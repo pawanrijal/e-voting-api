@@ -7,12 +7,17 @@ module.exports = {
       "roles",
       [
         {
-          name: "Voter",
+          name: "User",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           name: "Admin",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Candidate",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
