@@ -37,7 +37,7 @@ class ElectionController {
         option.offset = parseInt(offset);
       }
       option.order = [["createdAt", "DESC"]];
-      const electionData = await electionService.findAll(option);
+      const electionData = await electionService.findAll(req.user, option);
       const meta = {
         limit: option.limit,
         offset: option.offset,

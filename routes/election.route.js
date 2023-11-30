@@ -15,12 +15,10 @@ module.exports = (app) => {
   app
     .route("/api/election/:id")
     .put(authenticator, adminMiddleware, ElectionController.update);
-  app
-    .route("/api/election")
-    .get(authenticator, adminMiddleware, ElectionController.findAll);
+  app.route("/api/election").get(authenticator, ElectionController.findAll);
   app
     .route("/api/election/:id")
-    .get(authenticator, adminMiddleware, ElectionController.findById);
+    .get(authenticator, ElectionController.findById);
   app
     .route("/api/election/:id")
     .delete(authenticator, adminMiddleware, ElectionController.delete);

@@ -1,4 +1,4 @@
-const { user } = require("../lib/database.connection");
+const { user, role } = require("../lib/database.connection");
 const bcrypt = require("bcrypt");
 const {
   passwordMismatchException,
@@ -138,6 +138,12 @@ class UserService {
   async checkExpiryDate(_user) {
     const expiryDate = _user.resetPasswordExpires;
     return expiryDate < new Date() ? true : false;
+  }
+
+  async getRoleOfUser(userId) {
+    const userData = await this.findById(userId);
+    const roleData = await role.findByPk(userData.roleId);
+    return roleData;
   }
 }
 

@@ -1,4 +1,4 @@
-const { position, election } = require("../lib/database.connection");
+const { position, election, candidate } = require("../lib/database.connection");
 const { notFoundException } = require("../exceptions/notFound.exception");
 const electionService = require("./election.service");
 
@@ -25,7 +25,7 @@ class PositionService {
   async findAll(option) {
     const returnData = await position.findAll({
       ...option,
-      include: [election],
+      include: [election, candidate],
     });
 
     const total = await position.count();
@@ -35,7 +35,7 @@ class PositionService {
   async findById(id) {
     const positionData = await position.findOne({
       where: { id },
-      include: [election],
+      include: [election, candidate],
     });
     if (positionData === null || positionData === undefined)
       throw new notFoundException("position");

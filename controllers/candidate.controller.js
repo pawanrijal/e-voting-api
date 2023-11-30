@@ -4,8 +4,7 @@ const successResponse = require("../utils/successResponse");
 class CandidateController {
   async create(req, res, next) {
     try {
-      const candidate = await candidateService.create(req.body);
-
+      const candidate = await candidateService.create(req.body, req.user);
       successResponse(res, 200, candidate, "candidate Created");
     } catch (err) {
       next(err);
@@ -21,7 +20,8 @@ class CandidateController {
         option.offset = parseInt(offset);
       }
       option.order = [["createdAt", "DESC"]];
-      const candidateData = await candidateService.findAll(option);
+
+      const candidateData = await candidateService.findAll(req.user, option);
       const meta = {
         limit: option.limit,
         offset: option.offset,
