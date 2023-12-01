@@ -63,6 +63,16 @@ class PositionController {
       next(err);
     }
   }
+
+  async getCandidateVotes(req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = await positionService.getCandidateVotes(id);
+      successResponse(res, 200, data, "Data Fetched");
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = new PositionController();

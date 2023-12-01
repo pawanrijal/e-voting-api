@@ -1,4 +1,10 @@
-const { vote, position, candidate } = require("../lib/database.connection");
+const {
+  vote,
+  position,
+  candidate,
+  election,
+} = require("../lib/database.connection");
+const { isDateGreaterThanToday } = require("../utils");
 const candidateService = require("./candidate.service");
 const positionService = require("./position.service");
 
@@ -46,6 +52,33 @@ class VoteService {
       throw new Error(err.message);
     }
   }
+
+  // async getVoteResultByCandidate(candidateId) {
+  //   try {
+  //     const candidateData = await candidate.findByPk(candidateId, {
+  //       include: [position],
+  //     });
+  //     const positionData = await position.findByPk(candidateData.position.id, {
+  //       include: [election],
+  //     });
+  //     const isTodayGreater = isDateGreaterThanToday(
+  //       positionData.election.endDate
+  //     );
+  //     if (isTodayGreater) {
+  //       const data = [];
+
+  //     } else {
+  //       console.log(false);
+  //     }
+  //   } catch (err) {
+  //     throw new Error(err.message);
+  //   }
+  // }
+
+  // async countVoteForCandidate(candidateId) {
+  //   const total = await vote.count({ where: { candidateId } });
+  //   return total;
+  // }
 }
 
 module.exports = new VoteService();

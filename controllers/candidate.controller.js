@@ -56,7 +56,11 @@ class CandidateController {
   async decision(req, res, next) {
     try {
       const { id } = req.params;
-      const candidateData = await candidateService.decision(req.body, id);
+      const candidateData = await candidateService.decision(
+        req.body,
+        id,
+        req.user
+      );
       successResponse(res, 200, candidateData, "candidate edited");
     } catch (err) {
       next(err);

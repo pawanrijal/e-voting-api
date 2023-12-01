@@ -22,4 +22,8 @@ module.exports = (app) => {
   app
     .route("/api/position/:id")
     .delete(authenticator, adminMiddleware, PositionController.delete);
+
+  app
+    .route("/api/position/getCandidateVotes/:id")
+    .get(authenticator, adminMiddleware, PositionController.getCandidateVotes);
 };

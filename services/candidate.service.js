@@ -1,7 +1,8 @@
-const { candidate, position } = require("../lib/database.connection");
+const { candidate, position, vote } = require("../lib/database.connection");
 const { notFoundException } = require("../exceptions/notFound.exception");
 const userService = require("./user.service");
 const positionService = require("../services/position.service");
+const voteService = require("./vote.service");
 
 class CandidateService {
   async create(payload, user) {
@@ -42,13 +43,27 @@ class CandidateService {
   }
 
   async findById(id, user) {
-    const candidateData = await candidate.findOne({
-      where: { id, userId: user.id },
-      include: [position],
-    });
-    if (candidateData === null || candidateData === undefined)
-      throw new notFoundException("candidate");
-    return candidateData;
+    const roleData = await userService.getRoleOfUser(user.id);
+    if (roleData.name === "User") {
+      const candidateData = await candidate.findOne({
+        where: { id, userId: user.id },
+        include: [position],
+      });
+      if (candidateData === null || candidateData === undefined)
+        throw new notFoundException("candidate");
+      candidateData.dataValues.voteCount = await this.getVoteCount(id);
+      return candidateData;
+    } else {
+      const candidateData = await candidate.findOne({
+        where: { id },
+        include: [position],
+      });
+      if (candidateData === null || candidateData === undefined)
+        throw new notFoundException("candidate");
+
+      candidateData.dataValues.voteCount = await this.getVoteCount(id);
+      return candidateData;
+    }
   }
   async delete(id) {
     await this.findById(id);
@@ -57,11 +72,20 @@ class CandidateService {
   }
 
   // decision as approve/reject
-  async decision(payload, id) {
-    const candidateData = await this.findById(id);
-    candidateData.status = payload.status;
-    const returnData = await candidateData.save();
-    return returnData;
+  async decision(payload, id, user) {
+    try {
+      const candidateData = await this.findById(id, user);
+      candidateData.status = payload.status;
+      const returnData = await candidateData.save();
+      return returnData;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getVoteCount(candidateId) {
+    const total = await vote.count({ where: { candidateId } });
+    return total;
   }
 }
 

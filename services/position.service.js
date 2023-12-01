@@ -1,6 +1,12 @@
-const { position, election, candidate } = require("../lib/database.connection");
+const {
+  position,
+  election,
+  candidate,
+  user,
+} = require("../lib/database.connection");
 const { notFoundException } = require("../exceptions/notFound.exception");
 const electionService = require("./election.service");
+const { getVoteCount } = require("./candidate.service");
 
 class PositionService {
   async create(payload) {
@@ -45,6 +51,22 @@ class PositionService {
     await this.findById(id);
     const returnData = await position.destroy({ where: { id } });
     return returnData;
+  }
+
+  async getCandidateVotes(id) {
+    const positionData = await this.findById(id);
+    const data = [];
+    for (let candidate of positionData.candidates) {
+      const userData = await user.findByPk(candidate.userId);
+      data.push({
+        candidateId: candidate.id,
+        candidateName: candidate.name,
+        voteCount: await getVoteCount(candidate.id),
+        email: userData.email ?? "",
+      });
+    }
+    data.sort((a, b) => b.voteCount - a.voteCount);
+    return data;
   }
 }
 
