@@ -7,6 +7,8 @@ const {
 const { notFoundException } = require("../exceptions/notFound.exception");
 const electionService = require("./election.service");
 const { getVoteCount } = require("./candidate.service");
+const candidateService = require("./candidate.service");
+const { isDateGreaterThanToday } = require("../utils");
 
 class PositionService {
   async create(payload) {
@@ -63,10 +65,27 @@ class PositionService {
         candidateName: candidate.name,
         voteCount: await getVoteCount(candidate.id),
         email: userData.email ?? "",
+        userId: userData.id,
       });
     }
     data.sort((a, b) => b.voteCount - a.voteCount);
     return data;
+  }
+
+  async getVoteResult(id, user) {
+    const candidateData = await candidateService.findById(id, user);
+
+    const positionData = await this.findById(candidateData.position.id);
+    const data = await this.getCandidateVotes(candidateData.position.id);
+
+    const isGreater = isDateGreaterThanToday(positionData.election.endDate);
+    if (isGreater) {
+      if (data[0]["userId"] === user.id) {
+        return "Won";
+      }
+      return "Lose";
+    }
+    return "Pending";
   }
 }
 

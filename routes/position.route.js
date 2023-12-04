@@ -3,6 +3,7 @@ const { positionSchema } = require("../validations/position.schema");
 const authenticator = require("../middleware/authentication.middleware");
 const validator = require("../middleware/validation.middleware");
 const adminMiddleware = require("../middleware/admin.middleware");
+const userMiddleware = require("../middleware/user.middleware");
 module.exports = (app) => {
   app
     .route("/api/position")
@@ -26,4 +27,8 @@ module.exports = (app) => {
   app
     .route("/api/position/getCandidateVotes/:id")
     .get(authenticator, adminMiddleware, PositionController.getCandidateVotes);
+
+  app
+    .route("/api/position/getVoteResult/:id")
+    .get(authenticator, userMiddleware, PositionController.getVoteResult);
 };
