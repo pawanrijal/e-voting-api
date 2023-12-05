@@ -16,11 +16,11 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        {
-          name: "Candidate",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+        // {
+        //   name: "Candidate",
+        //   createdAt: new Date(),
+        //   updatedAt: new Date(),
+        // },
       ],
       {}
     );

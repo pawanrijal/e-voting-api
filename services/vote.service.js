@@ -36,7 +36,6 @@ class VoteService {
 
   async getVotedCandidate(payload) {
     try {
-      await positionService.findById(payload.positionId);
       const voteData = await vote.findOne({
         where: {
           positionId: payload.positionId,
