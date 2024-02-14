@@ -5,8 +5,9 @@ const electionSchema = Joi.object({
     "string.base": "Name should be string",
   }),
   description: Joi.string(),
-  startDate: Joi.string().required(),
-  endDate: Joi.string().required(),
+  time:Joi.number().required()
+  // startDate: Joi.string().required(),
+  // endDate: Joi.string().required(),
 });
 
 module.exports = { electionSchema };

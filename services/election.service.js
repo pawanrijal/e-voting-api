@@ -1,7 +1,8 @@
 const { election, candidate, position } = require("../lib/database.connection");
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const { notFoundException } = require("../exceptions/notFound.exception");
 const UserService = require("../services/user.service");
+const db = require("../lib/database.connection");
 
 class ElectionService {
   async create(payload, user) {
@@ -28,20 +29,16 @@ class ElectionService {
       return { data: returnData, total };
     }
     if (roleData.name === "User") {
-      const today = new Date();
-      const formattedToday = today.toISOString().split("T")[0];
-      const returnData = await election.findAll({
-        ...option,
-        where: {
-          [Op.and]: [
-            { startDate: { [Op.lte]: formattedToday } }, // startDate <= today
-            { endDate: { [Op.gte]: formattedToday } }, // endDate >= today
-          ],
-        },
-        include: [position],
-      });
-      const total = await returnData.length;
-      return { data: returnData, total };
+      const currentDate = new Date();
+    const activeElections = await election.findAll({
+      where: {
+        start_date: { [Op.lte]: currentDate },
+        end_date: { [Op.gte]: currentDate },
+      },
+    });
+
+      const total = await activeElections.length;
+      return { data: activeElections, total };
     } else {
       //For candidate
     }

@@ -7,14 +7,14 @@
     "dialect": "postgres"
   },
   "test": {
-      "username": "postgres",
+    "username": "postgres",
     "password": "pawan123",
     "database": "e-voting",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
-     "username": "postgres",
+    "username": "postgres",
     "password": "pawan123",
     "database": "e-voting",
     "host": "127.0.0.1",

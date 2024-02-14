@@ -5,7 +5,10 @@ class ElectionController {
   async create(req, res, next) {
     try {
       const user = await req.user;
-
+      const currentDate = new Date();
+      const endDate = new Date(currentDate.getTime() + parseInt(req.body.time) * 60000);
+      req.body.endDate = endDate;
+      req.body.startDate = currentDate;
       const election = await electionService.create(req.body, user);
 
       successResponse(res, 200, election, "Election Created");
@@ -17,6 +20,10 @@ class ElectionController {
   async update(req, res, next) {
     try {
       const { id } = req.params;
+        const currentDate = new Date();
+      const endDate = new Date(currentDate.getTime() + parseInt(req.body.time) * 60000);
+      req.body.endDate = endDate;
+      req.body.startDate = currentDate;
       const electionData = await electionService.update(
         req.body,
         id,

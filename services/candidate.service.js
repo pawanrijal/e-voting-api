@@ -6,7 +6,7 @@ const voteService = require("./vote.service");
 
 class CandidateService {
   async create(payload, user) {
-    await positionService.findById(payload.positionId);
+    // await positionService.findById(payload.positionId);
     const candidateData = await candidate.findOne({
       where: { userId: user.id, positionId: payload.positionId },
     });

@@ -15,12 +15,16 @@ module.exports = (sequelize, type) => {
         type: type.STRING,
         allowNull: true,
       },
-      startDate: {
+      time:{
         type: type.STRING,
         allowNull: false,
       },
+      startDate: {
+        type: type.DATE,
+        allowNull: false,
+      },
       endDate: {
-        type: type.STRING,
+        type: type.DATE,
         allowNull: false,
       },
       status: {
