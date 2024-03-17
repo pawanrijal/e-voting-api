@@ -40,6 +40,10 @@ module.exports = (sequelize, type) => {
         type: type.INTEGER,
         default: 1,
       },
+      otpVerified: {
+        type: type.BOOLEAN,
+        default: false,
+      },
     },
     {
       timestamps: true,

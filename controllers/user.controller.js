@@ -15,6 +15,15 @@ class UserController {
     }
   }
 
+  async verifyOtp(req, res, next) {
+    try {
+      const response = await UserService.verifyOtp(req.body);
+      successResponse(res, 200, response, "OTP verified");
+    } catch (err) {
+      next(err);
+    } 
+  }
+
   async update(req, res, next) {
     try {
       if (req.file) {

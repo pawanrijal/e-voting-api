@@ -18,6 +18,7 @@ module.exports = (app) => {
     validator(signupSchema),
     UserController.signup
   );
+  app.route("/api/verify-otp").post( UserController.verifyOtp);
   app.route("/api/user").put(authenticator, UserController.update);
   app.route("/api/user").get(authenticator, UserController.profile);
   app.route("/api/login").post(validator(loginSchema), UserController.login);

@@ -1,4 +1,5 @@
-const { user, role } = require("../lib/database.connection");
+const { user, role, otp } = require("../lib/database.connection");
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const {
   passwordMismatchException,
@@ -24,6 +25,9 @@ class UserService {
         payload.password = await hashPassword(password);
         const userData = await user.create(payload); //user create
         userData.password = undefined;
+
+     
+
         return userData;
       } else {
         throw new passwordMismatchException();
@@ -32,6 +36,48 @@ class UserService {
       throw new alreadyExistsException("User");
     }
   }
+
+  async sendOtp(payload) {
+    const otpNum = this.generateOTP();
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 5);
+    const otpData = {
+     otp: otpNum,
+      userId: payload.id,
+      expiresAt,
+    };
+   await otp.create(otpData);
+    const html = `Hi ${payload.fullName} \n Your OTP is ${otpNum}`;
+    const sendEmail = new SendMail(payload.email, "OTP Email", html);
+    sendEmail.send();
+  }
+
+  async verifyOtp(payload) {
+    const otpData = await otp.findOne({
+      where: { otp:payload.otp},  
+    });
+    if (otpData) {
+      if (otpData.expiresAt < new Date()) {
+        throw new tokenExpiredException();
+      }
+      otpData.verified = true;
+      await otpData.save();
+      const userData = await user.findByPk(otpData.userId);
+      userData.otpVerified = true;
+      await userData.save();
+      return true;
+    }
+    throw new notFoundException("OTP"); 
+  }
+
+
+  generateOTP() {
+    const randomNum = crypto.randomInt(100000, 999999);
+    const otp = randomNum.toString();
+    return otp;
+  }
+
+
 
   async update(payload, _user) {
     if (payload.profilePic) {
@@ -80,7 +126,8 @@ class UserService {
       const compared = await bcrypt.compare(password, _user.password); //compare hashed password
       if (compared) {
         const token = generateToken(_user, 68400); //jwt token
-        return { token: token };
+           await this.sendOtp(_user);
+        return { token: token,verified:_user.otpVerified };
       } else {
         throw new passwordMismatchException();
       }
